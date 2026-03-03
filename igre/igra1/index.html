@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>π-Dan — Sledeca cifra</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <h1>Nije svaki dan π-Dan="top-bar">
+        <div class="score-box">
+          <span class="label">Poeni</span>
+          <span id="score" class="value">0</span>
+        </div></h1>
+      <p class="tagline">Koja cifra sledi?</p>
+      <div class
+        <div class="timer-box">
+          <span class="label">Vreme</span>
+          <span id="timer" class="value">2:00</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="game-area">
+      <section id="start-screen" class="screen">
+        <div class="start-card">
+          <p>Imaš 2 minuta da poređaš što više cifara broja π posle <strong>3.14</strong>.</p>
+          <p>Jedan tačan odgovor = 1 poen.</p>
+          <input type="text" id="player-name" placeholder="Tvoje ime" maxlength="20" autocomplete="off">
+          <button type="button" id="btn-start" class="btn btn-primary">Kreni</button>
+        </div>
+      </section>
+
+      <section id="play-screen" class="screen hidden">
+        <div class="current-number-card" aria-live="polite">
+          <span id="current-pi">3.14</span>
+        </div>
+        <p class="prompt">Sledeca cifra?</p>
+        <div class="options" id="options" role="group" aria-label="Izbor sledece cifre">
+          <button type="button" class="option" data-digit="">?</button>
+          <button type="button" class="option" data-digit="">?</button>
+          <button type="button" class="option" data-digit="">?</button>
+          <button type="button" class="option" data-digit="">?</button>
+        </div>
+      </section>
+
+      <section id="end-screen" class="screen hidden">
+        <div class="end-card">
+          <h2 id="end-message">Vreme je isteklo!</h2>
+          <p class="final-score">Osvojio/la si <strong id="final-score">0</strong> poen(a).</p>
+          <div class="leaderboard-wrap">
+            <h3>Rang lista</h3>
+            <ol id="leaderboard" class="leaderboard"></ol>
+          </div>
+          <button type="button" id="btn-again" class="btn btn-primary">Igraj ponovo</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
