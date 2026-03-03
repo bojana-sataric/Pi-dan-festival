@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nije svaki dan Pi-Dan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --surface: #1a1a22;
+      --accent: #22c55e;
+      --text: #e8e8ed;
+      --muted: #8b8ba7;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 1.8rem;
+      border-radius: var(--radius);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      min-height: 48px;
+    }
+
+    .card a {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .card a:hover {
+      background: #16a34a;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>Nije svaki dan Pi-Dan</h1>
+      <p>
+        Digitalni festival učeničkih igara povodom Dana broja π.
+        Izaberi igru, testiraj znanje i zabavi se.
+      </p>
+    </header>
+
+    <section class="games-grid">
+
+      <div class="card">
+        <h3>Sledeća cifra</h3>
+        <p>Pogodi sledeću cifru broja π pre nego što istekne vreme.</p>
+        <a href="igre/igra1/index.html">Igraj</a>
+      </div>
+
+      <div class="card">
+        <h3>Pi Memorija</h3>
+        <p>Koliko cifara možeš da zapamtiš bez greške?</p>
+        <a href="igre/igra2/index.html">Igraj</a>
+      </div>
+
+      <div class="card">
+        <h3>Pi Kvadrat</h3>
+        <p>Rešavaj mini zadatke inspirisane brojem π.</p>
+        <a href="igre/igra3/index.html">Igraj</a>
+      </div>
+
+      <div class="card">
+        <h3>Pi Izazov</h3>
+        <p>Kombinacija brzine, znanja i koncentracije.</p>
+        <a href="igre/igra4/index.html">Igraj</a>
+      </div>
+
+    </section>
+
+    <footer>
+      14. mart • Projekat realizovan u okviru školske aktivnosti
+    </footer>
+
+  </div>
+</body>
+</html>
