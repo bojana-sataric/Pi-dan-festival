@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>π kroz učenje</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        @keyframes matrixPadaj {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes neonPuls {
+            0% { text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14; }
+            50% { text-shadow: 0 0 40px #39FF14, 0 0 80px #39FF14; }
+            100% { text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14; }
+        }
+
+        @keyframes rotiraj {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes flashGreenBg {
+            0% { box-shadow: 0 0 0 rgba(57, 255, 20, 0); }
+            50% { box-shadow: 0 0 120px rgba(57, 255, 20, 0.9); background: rgba(20, 40, 20, 1); }
+            100% { box-shadow: 0 0 80px rgba(57, 255, 20, 0.5); background: rgba(10, 20, 10, 0.95); }
+        }
+
+        body {
+            background-color: #0A0A0A;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: auto;
+            color: #39FF14;
+            padding: 20px;
+        }
+
+        /* MATRIX POZADINA */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 0%, #39FF14 1%, transparent 2%);
+            background-size: 100% 25px;
+            opacity: 0.15;
+            animation: matrixPadaj 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* rotirajući krug */
+        .rotirajuci-krug {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            height: 900px;
+            border: 5px dashed #39FF14;
+            border-radius: 50%;
+            animation: rotiraj 60s linear infinite;
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .formula-na-krugu {
+            position: absolute;
+            color: #39FF14;
+            font-size: 36px;
+            font-weight: bold;
+            white-space: nowrap;
+            text-shadow: 0 0 15px #39FF14;
+        }
+
+        .f1 { top: -40px; left: 50%; transform: translateX(-50%); }
+        .f2 { bottom: -40px; left: 50%; transform: translateX(-50%); }
+        .f3 { right: -120px; top: 50%; transform: translateY(-50%); }
+        .f4 { left: -120px; top: 50%; transform: translateY(-50%); }
+
+        /* glavni kontejneri - VELIKI I ČITLJIVI */
+        #menuContainer, #game1Container, #game2Container, #game3Container, #learnContainer {
+            position: relative;
+            z-index: 20;
+            width: 95%;
+            max-width: 1400px;
+            min-height: 800px;
+            padding: 40px;
+            background: rgba(10, 20, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border: 6px solid #39FF14;
+            border-radius: 80px;
+            box-shadow: 0 0 80px rgba(57, 255, 20, 0.5);
+            transition: all 0.5s ease;
+            margin: 20px auto;
+        }
+
+        .flash-green {
+            animation: flashGreenBg 0.7s ease-out 1;
+        }
+
+        #game1Container, #game2Container, #game3Container, #learnContainer {
+            display: none;
+        }
+
+        /* MENI - VELIKI */
+        .pi-hero {
+            font-size: 180px;
+            font-weight: 900;
+            color: #39FF14;
+            animation: neonPuls 2s ease-in-out infinite;
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Times New Roman', serif;
+            line-height: 1;
+        }
+
+        .pi-cifre {
+            font-size: 56px;
+            color: #39FF14;
+            text-align: center;
+            letter-spacing: 10px;
+            background: black;
+            padding: 30px 50px;
+            border-radius: 80px;
+            border: 4px solid #39FF14;
+            margin: 30px auto 60px auto;
+            display: inline-block;
+            width: auto;
+            box-shadow: 0 0 40px rgba(57,255,20,0.3);
+        }
+
+        .meni {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .meni-dugme {
+            background: transparent;
+            border: 5px solid #39FF14;
+            color: #39FF14;
+            font-size: 56px;
+            font-weight: bold;
+            padding: 30px 40px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+        }
+
+        .meni-dugme:hover {
+            background: #39FF14;
+            color: black;
+            box-shadow: 0 0 80px #39FF14;
+            transform: scale(1.05);
+        }
+
+        /* ZAJEDNIČKI STILOVI - SVE UVEĆANO */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: black;
+            padding: 25px 40px;
+            border-radius: 70px;
+            border: 4px solid #39FF14;
+            font-size: 36px;
+        }
+
+        .nazad-dugme {
+            background: transparent;
+            border: 4px solid #39FF14;
+            color: #39FF14;
+            font-size: 40px;
+            padding: 20px 40px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .nazad-dugme:hover {
+            background: #39FF14;
+            color: black;
+        }
+
+        .rezultat {
+            font-size: 40px;
+            color: #39FF14;
+            font-weight: bold;
+        }
+
+        /* IGRICA 1 - POGODI CIFRU */
+        .pi-niz {
+            background: black;
+            padding: 60px;
+            border-radius: 80px;
+            border: 6px solid #39FF14;
+            margin: 40px 0;
+            box-shadow: inset 0 0 50px rgba(57,255,20,0.3);
+        }
+
+        .prikaz-niza {
+            font-size: 90px;
+            font-weight: bold;
+            color: #39FF14;
+            text-align: center;
+            letter-spacing: 15px;
+            word-break: break-all;
+        }
+
+        .cifre-opcije {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .cifra-dugme {
+            background: black;
+            border: 5px solid #39FF14;
+            color: #39FF14;
+            font-size: 72px;
+            font-weight: bold;
+            padding: 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 130px;
+        }
+
+        .cifra-dugme:hover:not(:disabled) {
+            background: #39FF14;
+            color: black;
+            transform: scale(1.1);
+            box-shadow: 0 0 60px #39FF14;
+        }
+
+        .cifra-dugme.tacno {
+            background: #39FF14;
+            color: black;
+            animation: neonPuls 0.5s ease;
+        }
+
+        .cifra-dugme.netacno {
+            opacity: 0.4;
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        .cifra-dugme:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* IGRICA 2 - FORMULE */
+        .formule-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin: 40px 0;
+        }
+
+        .formule-kolone {
+            background: black;
+            border: 5px solid #39FF14;
+            border-radius: 60px;
+            padding: 40px;
+            min-height: 600px;
+        }
+
+        .kolona-naslov {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 40px;
+            color: #39FF14;
+            border-bottom: 4px solid #39FF14;
+            padding-bottom: 20px;
+        }
+
+        .formula-item {
+            background: rgba(57,255,20,0.15);
+            border: 4px solid #39FF14;
+            border-radius: 50px;
+            padding: 30px;
+            margin: 20px 0;
+            font-size: 42px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .formula-item:hover:not(.spojeno) {
+            background: rgba(57,255,20,0.4);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px #39FF14;
+        }
+
+        .formula-item.selektovano {
+            background: #39FF14;
+            color: black;
+            box-shadow: 0 0 50px #39FF14;
+        }
+
+        .formula-item.spojeno {
+            background: #39FF14;
+            color: black;
+            opacity: 0.7;
+            border: 4px solid white;
+        }
+
+        /* IGRICA 3 - VREMENSKI NAPAD */
+        .tajmer {
+            font-size: 120px;
+            text-align: center;
+            background: black;
+            border: 6px solid #39FF14;
+            border-radius: 80px;
+            padding: 50px;
+            margin: 30px 0;
+            font-weight: bold;
+            animation: neonPuls 1s ease infinite;
+        }
+
+        .pitanje-tekst {
+            font-size: 60px;
+            text-align: center;
+            margin: 50px 0;
+            background: black;
+            padding: 50px;
+            border-radius: 70px;
+            border: 4px solid #39FF14;
+            line-height: 1.4;
+        }
+
+        .odgovori-vreme {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            margin: 40px 0;
+        }
+
+        .odgovor-dugme {
+            background: black;
+            border: 5px solid #39FF14;
+            color: #39FF14;
+            font-size: 52px;
+            padding: 40px;
+            border-radius: 70px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 150px;
+        }
+
+        .odgovor-dugme:hover:not(.onemoguceno) {
+            background: #39FF14;
+            color: black;
+            transform: scale(1.05);
+            box-shadow: 0 0 60px #39FF14;
+        }
+
+        .odgovor-dugme.tacno-vreme {
+            background: #39FF14;
+            color: black;
+            animation: neonPuls 0.5s ease;
+        }
+
+        .poruka-igra {
+            font-size: 48px;
+            text-align: center;
+            margin: 40px 0;
+            padding: 40px;
+            border-radius: 70px;
+            background: black;
+            border: 4px solid #39FF14;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* UČI O π - STILOVI */
+        .learn-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: black;
+            padding: 25px 40px;
+            border-radius: 70px;
+            border: 4px solid #39FF14;
+        }
+        
+        .naslov-stranice {
+            font-size: 70px;
+            color: #39FF14;
+            font-weight: bold;
+            animation: neonPuls 3s ease-in-out infinite;
+        }
+        
+        .pi-broj-veliki {
+            font-size: 60px;
+            background: black;
+            padding: 40px;
+            border-radius: 70px;
+            border: 4px solid #39FF14;
+            text-align: center;
+            margin: 30px 0;
+            letter-spacing: 5px;
+            word-break: break-all;
+        }
+        
+        .info-box {
+            background: black;
+            border: 4px solid #39FF14;
+            border-radius: 60px;
+            padding: 40px;
+            margin: 30px 0;
+            font-size: 36px;
+            line-height: 1.6;
+        }
+        
+        .formula-velika {
+            font-size: 60px;
+            background: #1a3a1a;
+            padding: 40px;
+            border-radius: 60px;
+            text-align: center;
+            margin: 30px 0;
+            border: 4px solid #39FF14;
+        }
+        
+        .learn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        
+        .learn-card {
+            background: black;
+            border: 4px solid #39FF14;
+            border-radius: 60px;
+            padding: 40px;
+        }
+        
+        .learn-card h3 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            color: #39FF14;
+            border-bottom: 3px solid #39FF14;
+            padding-bottom: 15px;
+        }
+        
+        .learn-card p {
+            font-size: 32px;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        
+        .krug-slike {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+        
+        .krug {
+            width: 250px;
+            height: 250px;
+            border: 6px solid #39FF14;
+            border-radius: 50%;
+            position: relative;
+            background: black;
+        }
+        
+        .krug1::after {
+            content: "r";
+            font-size: 50px;
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            background: black;
+            padding: 5px 25px;
+            border: 4px solid #39FF14;
+            border-radius: 50px;
+        }
+        
+        .krug1::before {
+            content: "";
+            width: 6px;
+            height: 120px;
+            background: #39FF14;
+            position: absolute;
+            top: 25px;
+            left: 115px;
+            transform: rotate(-20deg);
+        }
+        
+        .istorija-item {
+            font-size: 32px;
+            margin: 25px 0;
+            padding: 20px;
+            border-left: 8px solid #39FF14;
+            background: rgba(57,255,20,0.1);
+            border-radius: 30px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .euler-formula {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 48px;
+            padding: 30px;
+            border-top: 4px solid #39FF14;
+            border-bottom: 4px solid #39FF14;
+            opacity: 0.8;
+            transition: all 0.5s ease;
+        }
+
+        .euler-formula:hover {
+            opacity: 1;
+            text-shadow: 0 0 40px #39FF14;
+        }
+
+        .floating-pi {
+            position: absolute;
+            color: #39FF14;
+            opacity: 0.15;
+            font-size: 70px;
+            pointer-events: none;
+            z-index: 0;
+            animation: neonPuls 4s ease-in-out infinite;
+        }
+
+        .epa-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 30px;
+            letter-spacing: 10px;
+            color: #39FF14;
+            text-shadow: 0 0 20px #39FF14;
+        }
+
+        ::-webkit-scrollbar {
+            width: 15px;
+            background: black;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #39FF14;
+            border-radius: 20px;
+            border: 3px solid black;
+        }
+    </style>
+</head>
+<body>
+    <!-- MATRIX POZADINA -->
+    <div class="matrix-bg"></div>
+    
+    <!-- rotirajući krug -->
+    <div class="rotirajuci-krug">
+        <div class="formula-na-krugu f1">O = 2πr</div>
+        <div class="formula-na-krugu f2">P = πr²</div>
+        <div class="formula-na-krugu f3">π = O/d</div>
+        <div class="formula-na-krugu f4">π ≈ 22/7</div>
+    </div>
+
+    <!-- MENI -->
+    <div id="menuContainer">
+        <div class="pi-hero">π</div>
+        <div style="text-align: center;">
+            <div class="pi-cifre">3 . 1 4 1 5 9 2 6 5 3 5 . . .</div>
+        </div>
+        
+        <div class="meni">
+            <button class="meni-dugme" onclick="startGame(1)">🎮 POGODI CIFRU</button>
+            <button class="meni-dugme" onclick="startGame(2)">📐 FORMULA IZAZOV</button>
+            <button class="meni-dugme" onclick="startGame(3)">⚡ VREMENSKI NAPAD</button>
+            <button class="meni-dugme" onclick="startGame(4)">📖 UČI O π</button>
+        </div>
+
+        <div class="euler-formula">
+            e<span style="font-size: 36px; vertical-align: super;">iπ</span> + 1 = 0
+        </div>
+        <div class="epa-footer">EPA</div>
+    </div>
+
+    <!-- IGRICA 1 - POGODI CIFRU -->
+    <div id="game1Container">
+        <div class="game-header">
+            <button class="nazad-dugme" onclick="vratiSeNaMeni()">← NAZAD</button>
+            <span class="rezultat">🎮 POGODI CIFRU</span>
+            <span class="rezultat" id="brojPogodaka">0 / 5</span>
+        </div>
+
+        <div class="pi-niz">
+            <div class="prikaz-niza" id="prikazNiza1">3.1415<span style="opacity:0.5;">_</span></div>
+        </div>
+
+        <div class="cifre-opcije" id="cifreOpcije1"></div>
+        <div class="poruka-igra" id="porukaIgrica1"></div>
+        <div id="pokusajPonovoContainer1" style="display: none; text-align: center; margin-top: 25px;">
+            <button type="button" class="nazad-dugme" onclick="pokusajPonovo1()">Pokušaj ponovo</button>
+        </div>
+    </div>
+
+    <!-- IGRICA 2 - FORMULA IZAZOV -->
+    <div id="game2Container">
+        <div class="game-header">
+            <button class="nazad-dugme" onclick="vratiSeNaMeni()">← NAZAD</button>
+            <span class="rezultat">📐 SPOJI FORMULE</span>
+            <span class="rezultat" id="brojSpojenih">0 / 10</span>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button type="button" class="nazad-dugme" onclick="postaviNivoFormule(1)">NIVO 1 • LAKO</button>
+            <button type="button" class="nazad-dugme" onclick="postaviNivoFormule(2)" style="margin-left: 20px;">NIVO 2 • TEŠKO</button>
+        </div>
+
+        <div class="formule-grid">
+            <div class="formule-kolone">
+                <div class="kolona-naslov">FORMULE</div>
+                <div id="formuleLeva" class="formule-lista"></div>
+            </div>
+            <div class="formule-kolone">
+                <div class="kolona-naslov">NAZIVI</div>
+                <div id="formuleDesna" class="formule-lista"></div>
+            </div>
+        </div>
+        <div class="poruka-igra" id="porukaIgrica2">➤ Klikni formulu pa njen naziv!</div>
+    </div>
+
+    <!-- IGRICA 3 - VREMENSKI NAPAD -->
+    <div id="game3Container">
+        <div class="game-header">
+            <button class="nazad-dugme" onclick="vratiSeNaMeni()">← NAZAD</button>
+            <span class="rezultat">⚡ VREMENSKI NAPAD</span>
+            <span class="rezultat" id="vremePoeni">0 poena</span>
+        </div>
+
+        <div class="tajmer" id="tajmerVreme">10</div>
+        <div class="pitanje-tekst" id="pitanjeVreme">?</div>
+        
+        <div class="odgovori-vreme" id="odgovoriVreme"></div>
+        <div class="poruka-igra" id="porukaVreme">➤ Odgovori pre nego što istekne vreme!</div>
+    </div>
+
+    <!-- UČI O π -->
+    <div id="learnContainer">
+        <div class="learn-header">
+            <button class="nazad-dugme" onclick="vratiSeNaMeni()">← NAZAD</button>
+            <span class="naslov-stranice">📖 UČI O π</span>
+            <div style="width: 200px;"></div>
+        </div>
+
+        <div class="pi-broj-veliki">
+            π = 3.14159 26535 89793 23846...
+        </div>
+
+        <div class="info-box">
+            <span style="font-size: 50px;">🔢 ŠTA JE π?</span><br><br>
+            π (pi) je matematička konstanta. To je odnos obima kruga i njegovog prečnika.
+        </div>
+
+        <div class="formula-velika">
+            π = O / d
+        </div>
+
+        <div class="krug-slike">
+            <div>
+                <div class="krug krug1"></div>
+                <div style="font-size: 36px; text-align: center; margin-top: 20px;">Poluprečnik (r)</div>
+            </div>
+            <div>
+                <div class="krug" style="border-style: dashed;"></div>
+                <div style="font-size: 36px; text-align: center; margin-top: 20px;">Prečnik (d = 2r)</div>
+            </div>
+        </div>
+
+        <div class="learn-grid">
+            <div class="learn-card">
+                <h3>📐 OBIM KRUGA</h3>
+                <div class="formula-velika" style="font-size: 50px;">O = 2πr</div>
+                <p>Obim = 2 × π × poluprečnik</p>
+            </div>
+            <div class="learn-card">
+                <h3>🟢 POVRŠINA KRUGA</h3>
+                <div class="formula-velika" style="font-size: 50px;">P = πr²</div>
+                <p>Površina = π × poluprečnik²</p>
+            </div>
+        </div>
+
+        <h2 style="font-size: 60px; margin: 40px 0 20px 0;">📜 ISTORIJA π</h2>
+        <div class="istorija-item">• 1650 p.n.e. - Egipćani: π ≈ 3.16</div>
+        <div class="istorija-item">• 250 p.n.e. - Arhimed: 3.1408 do 3.1429</div>
+        <div class="istorija-item">• 480. god. - Zu Čongži: 3.1415926</div>
+        <div class="istorija-item">• 1610. - Ludolf: 35 decimala</div>
+        <div class="istorija-item">• 2024. - preko 62 biliona decimala!</div>
+
+        <h2 style="font-size: 60px; margin: 40px 0 20px 0;">📊 PRIBLIŽNE VREDNOSTI</h2>
+        <div class="grid-2">
+            <div class="learn-card">
+                <h3>22/7</h3>
+                <p style="font-size: 50px;">≈ 3.142857</p>
+            </div>
+            <div class="learn-card">
+                <h3>3.14</h3>
+                <p style="font-size: 50px;">osnovna vrednost</p>
+            </div>
+        </div>
+
+        <h2 style="font-size: 60px; margin: 40px 0 20px 0;">✨ ZANIMLJIVOSTI</h2>
+        <div class="grid-2">
+            <div class="learn-card">
+                <h3>🥧 PI DAN</h3>
+                <p>14. mart (3/14)</p>
+            </div>
+            <div class="learn-card">
+                <h3>🧠 REKORD</h3>
+                <p>70.000 cifara napamet</p>
+            </div>
+        </div>
+
+        <div class="euler-formula" style="margin-top: 40px;">
+            e^(iπ) + 1 = 0
+        </div>
+    </div>
+
+    <script>
+        // ==================== GLOBALNO ====================
+        const menuContainer = document.getElementById('menuContainer');
+        const game1Container = document.getElementById('game1Container');
+        const game2Container = document.getElementById('game2Container');
+        const game3Container = document.getElementById('game3Container');
+        const learnContainer = document.getElementById('learnContainer');
+
+        function zeleniBlic(element) {
+            element.classList.remove('flash-green');
+            // reset animacije
+            void element.offsetWidth;
+            element.classList.add('flash-green');
+        }
+
+        // ==================== NAVIGACIJA ====================
+        window.startGame = function(igra) {
+            menuContainer.style.display = 'none';
+            game1Container.style.display = 'none';
+            game2Container.style.display = 'none';
+            game3Container.style.display = 'none';
+            learnContainer.style.display = 'none';
+            
+            if(igra === 1) {
+                game1Container.style.display = 'block';
+                resetujIgru1();
+            } else if(igra === 2) {
+                game2Container.style.display = 'block';
+                postaviNivoFormule(1);
+            } else if(igra === 3) {
+                game3Container.style.display = 'block';
+                pokreniVremenskiNapad();
+            } else if(igra === 4) {
+                learnContainer.style.display = 'block';
+            }
+        }
+
+        window.vratiSeNaMeni = function() {
+            menuContainer.style.display = 'block';
+            game1Container.style.display = 'none';
+            game2Container.style.display = 'none';
+            game3Container.style.display = 'none';
+            learnContainer.style.display = 'none';
+            if(window.vremeTimer) clearInterval(window.vremeTimer);
+        }
+
+        // ==================== IGRICA 1 - POGODI CIFRU ====================
+        // π = 3 . 1 4 1 5 9 2 6 5 3 5 8 9 7 9 3 2 3 8 4 ...
+        const piNiz = [3,1,4,1,5,9,2,6,5,3,5,8,9,7,9,3,2,3,8,4];
+        let trenutniIndex1 = 5; // Počinjemo od 6. cifre (indeks 5) - to je 9
+        let brojTacnih1 = 0;
+
+        function resetujIgru1() {
+            trenutniIndex1 = 5;
+            brojTacnih1 = 0;
+            document.getElementById('prikazNiza1').innerHTML = '3.1415<span style="opacity:0.5;">_</span>';
+            document.getElementById('brojPogodaka').innerText = '0 / 5';
+            
+            document.getElementById('porukaIgrica1').innerHTML = '';
+            document.getElementById('pokusajPonovoContainer1').style.display = 'none';
+            
+            const cifreDiv = document.getElementById('cifreOpcije1');
+            cifreDiv.innerHTML = '';
+            
+            for(let i = 0; i <= 9; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'cifra-dugme';
+                btn.innerText = i;
+                btn.onclick = () => proveriCifru1(i, btn);
+                cifreDiv.appendChild(btn);
+            }
+        }
+
+        function proveriCifru1(cifra, btn) {
+            // Ako je dugme već korišćeno (onemogućeno), ne radi ništa
+            if(btn.disabled) return;
+            
+            const trenutnaCifra = piNiz[trenutniIndex1];
+            const redniBrojCifre = trenutniIndex1 + 1; // +1 jer niz kreće od 0
+            
+            if(cifra === trenutnaCifra) {
+                // TAČNO
+                document.getElementById('pokusajPonovoContainer1').style.display = 'none';
+                btn.classList.add('tacno');
+                btn.disabled = true;
+                brojTacnih1++;
+                document.getElementById('brojPogodaka').innerText = brojTacnih1 + ' / 5';
+                
+                // Izgradi ceo prikaz iz niza
+                let prikaz = "3.";
+                for(let i = 0; i <= trenutniIndex1; i++) {
+                    prikaz += piNiz[i];
+                }
+                
+                trenutniIndex1++;
+                
+                if(brojTacnih1 === 5) {
+                    // Prikaži svih 10 cifara: 3.141592653
+                    document.getElementById('prikazNiza1').innerHTML = '3.141592653';
+                    document.getElementById('porukaIgrica1').innerHTML = '🎉 <strong>BRAVO!</strong> Znaš 10 cifara broja π!';
+                } else {
+                    // Dodaj placeholder
+                    document.getElementById('prikazNiza1').innerHTML = prikaz + '<span style="opacity:0.5;">_</span>';
+                    
+                    // Resetuj sva netačna dugmad za novu cifru
+                    document.querySelectorAll('#cifreOpcije1 .cifra-dugme.netacno').forEach(dugme => {
+                        dugme.classList.remove('netacno');
+                        dugme.disabled = false;
+                    });
+                    
+                    document.getElementById('porukaIgrica1').innerHTML = '✓ <strong>TAČNO!</strong>';
+                }
+            } else {
+                // NETAČNO
+                btn.classList.add('netacno');
+                btn.disabled = true;
+                document.getElementById('porukaIgrica1').innerHTML = '✗ <strong>NETAČNO.</strong>';
+                document.getElementById('pokusajPonovoContainer1').style.display = 'block';
+            }
+        }
+
+        function pokusajPonovo1() {
+            document.querySelectorAll('#cifreOpcije1 .cifra-dugme.netacno').forEach(dugme => {
+                dugme.classList.remove('netacno');
+                dugme.disabled = false;
+            });
+            document.getElementById('porukaIgrica1').innerHTML = '';
+            document.getElementById('pokusajPonovoContainer1').style.display = 'none';
+        }
+
+        // ==================== IGRICA 2 - FORMULE ====================
+        const formuleParoviLako = [
+            { formula: "πr²", naziv: "POVRŠINA KRUGA" },
+            { formula: "2πr", naziv: "OBIM KRUGA" },
+            { formula: "πd", naziv: "OBIM PREKO PREČNIKA" },
+            { formula: "r²π", naziv: "POVRŠINA (ISTI)" }
+        ];
+
+        const formuleParoviTesko = [
+            { formula: "(4/3)πr³", naziv: "ZAPREMINA LOPTE" },
+            { formula: "4πr²", naziv: "POVRŠINA SFERE" },
+            { formula: "(α/360)·πr²", naziv: "POVRŠINA KRUŽNOG ISEČKA" },
+            { formula: "(α/360)·2πr", naziv: "DUŽINA LUKA" },
+            { formula: "e^(iπ)+1=0", naziv: "OJLEROV IDENTITET" },
+            { formula: "π = O/d", naziv: "DEFINICIJA π" }
+        ];
+
+        let formuleParovi = [...formuleParoviLako];
+
+        let selektovanaFormula = null;
+        let brojSpojenih2 = 0;
+
+        let trenutniNivoFormule = 1;
+
+        function postaviNivoFormule(nivo) {
+            trenutniNivoFormule = nivo;
+            if(nivo === 1) {
+                formuleParovi = [...formuleParoviLako];
+            } else {
+                formuleParovi = [...formuleParoviTesko];
+            }
+            pokreniFormuleIzazov();
+
+            if(nivo === 1) {
+                document.getElementById('porukaIgrica2').innerText = '➤ NIVO 1: spoji osnovne formule!';
+            } else {
+                document.getElementById('porukaIgrica2').innerText = '➤ NIVO 2: spoji teže formule!';
+            }
+        }
+
+        function pokreniFormuleIzazov() {
+            selektovanaFormula = null;
+            brojSpojenih2 = 0;
+            document.getElementById('brojSpojenih').innerText = '0 / ' + formuleParovi.length;
+            document.getElementById('porukaIgrica2').innerText = '➤ Klikni formulu pa njen naziv!';
+            
+            const leva = document.getElementById('formuleLeva');
+            leva.innerHTML = '';
+            formuleParovi.forEach((par, index) => {
+                const div = document.createElement('div');
+                div.className = 'formula-item';
+                div.innerText = par.formula;
+                div.dataset.index = index;
+                div.dataset.type = 'formula';
+                div.onclick = () => kliknutItem(div);
+                leva.appendChild(div);
+            });
+            
+            const desna = document.getElementById('formuleDesna');
+            desna.innerHTML = '';
+            const randomNazivi = [...formuleParovi].sort(() => Math.random() - 0.5);
+            randomNazivi.forEach((par, idx) => {
+                const div = document.createElement('div');
+                div.className = 'formula-item';
+                div.innerText = par.naziv;
+                div.dataset.originalIndex = formuleParovi.findIndex(p => p.naziv === par.naziv);
+                div.dataset.type = 'naziv';
+                div.onclick = () => kliknutItem(div);
+                desna.appendChild(div);
+            });
+        }
+
+        function kliknutItem(element) {
+            if(element.classList.contains('spojeno')) return;
+            
+            if(selektovanaFormula === null) {
+                if(element.dataset.type === 'formula') {
+                    if(element.classList.contains('selektovano')) {
+                        element.classList.remove('selektovano');
+                        selektovanaFormula = null;
+                    } else {
+                        document.querySelectorAll('.formula-item').forEach(el => el.classList.remove('selektovano'));
+                        element.classList.add('selektovano');
+                        selektovanaFormula = element;
+                    }
+                } else {
+                    document.getElementById('porukaIgrica2').innerText = '⚠️ Prvo klikni na FORMULU!';
+                }
+            } else {
+                if(element.dataset.type === 'naziv') {
+                    const formulaIndex = selektovanaFormula.dataset.index;
+                    const nazivIndex = element.dataset.originalIndex;
+                    
+                    if(formulaIndex == nazivIndex) {
+                        selektovanaFormula.classList.remove('selektovano');
+                        selektovanaFormula.classList.add('spojeno');
+                        element.classList.add('spojeno');
+                        
+                        brojSpojenih2++;
+                        document.getElementById('brojSpojenih').innerText = brojSpojenih2 + ' / ' + formuleParovi.length;
+                        
+                        if(brojSpojenih2 === formuleParovi.length) {
+                            document.getElementById('porukaIgrica2').innerHTML = '🎉 SVE TAČNO! BRAVO!';
+                            zeleniBlic(game2Container);
+                        } else {
+                            document.getElementById('porukaIgrica2').innerHTML = '✓ TAČNO SPOJENO!';
+                        }
+                        selektovanaFormula = null;
+                    } else {
+                        document.getElementById('porukaIgrica2').innerHTML = '✗ NIJE TAČAN PAR. Pokušaj ponovo!';
+                        selektovanaFormula.classList.remove('selektovano');
+                        selektovanaFormula = null;
+                    }
+                } else {
+                    document.getElementById('porukaIgrica2').innerText = '⚠️ Klikni na NAZIV!';
+                }
+            }
+        }
+
+        // ==================== IGRICA 3 - VREMENSKI NAPAD ====================
+        const pitanjaVreme = [
+            { pitanje: "π je približno:", opcije: ["3.14", "2.71", "1.61", "4.20"], tacan: 0 },
+            { pitanje: "π je približno koliko?", opcije: ["22/7", "7/22", "3/1", "5/2"], tacan: 0 },
+            { pitanje: "Formula za obim kruga?", opcije: ["2πr", "πr²", "2r", "r²π"], tacan: 0 },
+            { pitanje: "Formula za površinu kruga?", opcije: ["πr²", "2πr", "πd", "r²"], tacan: 0 },
+            { pitanje: "Prečnik kruga je:", opcije: ["2r", "r/2", "πr", "2πr"], tacan: 0 },
+            { pitanje: "Ako je poluprečnik r = 3, obim kruga je približno:", opcije: ["≈ 18.8", "≈ 9.4", "≈ 6.0", "≈ 12.6"], tacan: 0 },
+            { pitanje: "Ako je poluprečnik r = 2, površina kruga je približno:", opcije: ["≈ 12.6", "≈ 6.3", "≈ 3.1", "≈ 25.1"], tacan: 0 },
+            { pitanje: "Ako je poluprečnik duplo veći, površina kruga je:", opcije: ["četiri puta veća", "dva puta veća", "ista", "π puta veća"], tacan: 0 }
+        ];
+
+        let trenutnoPitanjeVreme = 0;
+        let vremePoeni = 0;
+        let najboljiRezultatVreme = 0;
+        let vreme = 10;
+        let timerAktivan = false;
+
+        function pokreniVremenskiNapad() {
+            trenutnoPitanjeVreme = 0;
+            vremePoeni = 0;
+            document.getElementById('vremePoeni').innerText = '0 poena';
+            document.getElementById('porukaVreme').innerText = '➤ Odgovori što brže!';
+            sledecePitanjeVreme();
+        }
+
+        function sledecePitanjeVreme() {
+            if(trenutnoPitanjeVreme >= pitanjaVreme.length) {
+                document.getElementById('porukaVreme').innerHTML = `🎉 KRAJ! Osvojio/la si ${vremePoeni} POENA!`;
+                document.getElementById('tajmerVreme').innerText = 'KRAJ';
+                if(window.vremeTimer) clearInterval(window.vremeTimer);
+                return;
+            }
+            
+            vreme = 10;
+            document.getElementById('tajmerVreme').innerText = vreme;
+            
+            const pitanje = pitanjaVreme[trenutnoPitanjeVreme];
+            document.getElementById('pitanjeVreme').innerText = pitanje.pitanje;
+            
+            const odgovoriDiv = document.getElementById('odgovoriVreme');
+            odgovoriDiv.innerHTML = '';
+            
+            pitanje.opcije.forEach((opcija, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'odgovor-dugme';
+                btn.innerText = opcija;
+                btn.onclick = () => proveriOdgovorVreme(index, btn);
+                odgovoriDiv.appendChild(btn);
+            });
+            
+            if(window.vremeTimer) clearInterval(window.vremeTimer);
+            timerAktivan = true;
+            window.vremeTimer = setInterval(() => {
+                if(!timerAktivan) return;
+                vreme--;
+                document.getElementById('tajmerVreme').innerText = vreme;
+                
+                if(vreme <= 0) {
+                    clearInterval(window.vremeTimer);
+                    document.getElementById('porukaVreme').innerHTML = '⏰ VREME ISTEKLO!';
+                    timerAktivan = false;
+                    
+                    setTimeout(() => {
+                        trenutnoPitanjeVreme++;
+                        sledecePitanjeVreme();
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        function proveriOdgovorVreme(index, btn) {
+            if(!timerAktivan) return;
+            
+            const tacanIndex = pitanjaVreme[trenutnoPitanjeVreme].tacan;
+            
+            document.querySelectorAll('#odgovoriVreme .odgovor-dugme').forEach(b => {
+                b.classList.add('onemoguceno');
+            });
+            
+            if(index === tacanIndex) {
+                btn.classList.add('tacno-vreme');
+                vremePoeni += vreme;
+                document.getElementById('vremePoeni').innerText = vremePoeni + ' poena';
+                if(vremePoeni > najboljiRezultatVreme) {
+                    najboljiRezultatVreme = vremePoeni;
+                    zeleniBlic(game3Container);
+                }
+                document.getElementById('porukaVreme').innerHTML = `✓ TAČNO! +${vreme} POENA`;
+            } else {
+                document.getElementById('porukaVreme').innerHTML = `✗ NETAČNO. Tačno je: ${pitanjaVreme[trenutnoPitanjeVreme].opcije[tacanIndex]}`;
+            }
+            
+            timerAktivan = false;
+            clearInterval(window.vremeTimer);
+            
+            setTimeout(() => {
+                trenutnoPitanjeVreme++;
+                sledecePitanjeVreme();
+            }, 2500);
+        }
+
+        // ==================== DODATNI EFEKTI ====================
+        for (let i = 0; i < 15; i++) {
+            const el = document.createElement('div');
+            el.className = 'floating-pi';
+            el.style.top = Math.random() * 100 + '%';
+            el.style.left = Math.random() * 100 + '%';
+            el.style.fontSize = (40 + Math.random() * 80) + 'px';
+            el.textContent = ['π', '3.14', '22/7', 'π'][Math.floor(Math.random() * 4)];
+            document.body.appendChild(el);
+        }
+    </script>
+</body>
+</html>
