@@ -1,300 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="sr">
 <head>
-<meta charset="UTF-8">
-<title>PI Defender</title>
-<style>
-body { margin:0; overflow:hidden; background:black; font-family:Arial; }
-canvas { display:block; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nije svaki dan Pi-Dan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --surface: #1a1a22;
+      --accent: #22c55e;
+      --text: #e8e8ed;
+      --muted: #8b8ba7;
+      --radius: 18px;
+    }
 
-#ui {
-    position:absolute;
-    top:10px;
-    left:10px;
-    color:white;
-    font-size:18px;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-#hpBarContainer{
-    position:absolute;
-    top:40px;
-    left:10px;
-    width:250px;
-    height:25px;
-    border:2px solid white;
-}
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
 
-#hpBar{
-    height:100%;
-    width:100%;
-    background:red;
-}
+    .container {
+      max-width: 1000px;
+      width: 100%;
+    }
 
-#menu {
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:black;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    color:white;
-}
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
 
-button {
-    padding:15px 30px;
-    font-size:20px;
-    cursor:pointer;
-}
+    header h1 {
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
 
-#minimap {
-    position:absolute;
-    top:10px;
-    right:10px;
-    border:2px solid white;
-    background:#111;
-}
-</style>
+    header p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 1.8rem;
+      border-radius: var(--radius);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      min-height: 48px;
+    }
+
+    .card a {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .card a:hover {
+      background: #16a34a;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .logo-top-left {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      height: 72px;
+      width: auto;
+      z-index: 1000;
+    }
+
+    .visitor-badge {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 1000;
+    }
+
+    .visitor-badge img {
+      display: block;
+    }
+
+    .btn-school {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-school:hover {
+      background: #16a34a;
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 <body>
+  <img class="logo-top-left" src="logo.png" alt="Logo">
+  <a class="btn-school" href="https://www.skolaepa.com/" target="_blank" rel="noopener noreferrer">Sajt škole</a>
 
-<div id="menu">
-    <h1>PI APOCALYPSE</h1>
-    <button onclick="startGame()">START GAME</button>
-</div>
+  <div class="container">
 
-<div id="ui"></div>
-<div id="hpBarContainer"><div id="hpBar"></div></div>
+    <header>
+      <h1>Nije svaki dan Pi-Dan</h1>
+      <p>
+        Digitalni festival učeničkih igara povodom Dana broja π.
+        Izaberi igru, testiraj znanje i zabavi se.
+      </p>
+    </header>
 
-<canvas id="game"></canvas>
-<canvas id="minimap" width="200" height="200"></canvas>
+    <section class="games-grid">
 
-<script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+      <div class="card">
+        <h3>Sledeća cifra</h3>
+        <p>Pogodi sledeću cifru broja π pre nego što istekne vreme.</p>
+        <a href="igre/igra1/index.html">Igraj</a>
+        <p>učenik Luka Jakovljević III-2</p>
+      </div>
 
-const minimap = document.getElementById("minimap");
-const mtx = minimap.getContext("2d");
+     
+      <div class="card">
+        <h3>Pi Svemirci</h3>
+        <p>Pobedi π.</p>
+        <a href="igre/igra2/index.html">Igraj</a>
+        <p>učenik Vuk Grigorjev III-2</p>
+        <p>igra se na računaru</p>
+      </div>
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+      <div class="card">
+        <h3>Pi Izazov</h3>
+        <p>Kombinacija brzine, znanja i koncentracije.</p>
+        <a href="igre/igre3/index.html">Igraj</a>
+        <p>Miona Eraković III-2</p>
+      </div>
 
-let mapImage = new Image();
-mapImage.src = "map.png";
+      <div class="card">
+        <h3>Pi Memorija</h3>
+        <p>Koliko cifara možeš da zapamtiš bez greške?</p>
+        <a href="igre/igra4/index.html">Igraj</a>
+        <p>učenici Amon Niv i Anton Lebedev III-2</p>
+      </div>
 
-let gameStarted = false;
+      
+    </section>
 
-const WORLD_WIDTH = 3000;
-const WORLD_HEIGHT = 3000;
+    <footer>
+      14. mart • Projekat realizovan u okviru školske aktivnosti
+    </footer>
 
-const piDigits = "314159265358979323846264338327950288419716939937510";
+  </div>
 
-let keys = {};
-let bullets = [];
-let enemies = [];
-
-let mouse = {x:0,y:0};
-let shooting = false;
-let piIndex = 0;
-
-let camera = { x:0, y:0 };
-
-let player = {
-    x: WORLD_WIDTH/2,
-    y: WORLD_HEIGHT/2,
-    radius: 20,
-    speed: 5,
-    hp: 100,
-    maxHp: 100
-};
-
-let wave = 1;
-let score = 0;
-
-function startGame(){
-    document.getElementById("menu").style.display="none";
-    gameStarted = true;
-    for(let i=0;i<5;i++) spawnEnemy();
-    gameLoop();
-}
-
-document.addEventListener("keydown", e=> keys[e.key.toLowerCase()] = true);
-document.addEventListener("keyup", e=> keys[e.key.toLowerCase()] = false);
-
-canvas.addEventListener("mousemove", e=>{
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-});
-
-canvas.addEventListener("mousedown", ()=> shooting = true);
-canvas.addEventListener("mouseup", ()=> shooting = false);
-
-function spawnEnemy(){
-    enemies.push({
-        x: Math.random()*WORLD_WIDTH,
-        y: Math.random()*WORLD_HEIGHT,
-        radius: 25,
-        speed: 1 + wave*0.3,
-        hp: 30 + wave*10
-    });
-}
-
-function shoot(){
-    const worldMouseX = mouse.x + camera.x;
-    const worldMouseY = mouse.y + camera.y;
-
-    const angle = Math.atan2(worldMouseY-player.y, worldMouseX-player.x);
-
-    const digit = parseInt(piDigits[piIndex]);
-    piIndex = (piIndex+1)%piDigits.length;
-
-    bullets.push({
-        x: player.x,
-        y: player.y,
-        dx: Math.cos(angle)*10,
-        dy: Math.sin(angle)*10,
-        damage: digit+1,
-        digit: digit
-    });
-}
-
-function update(){
-
-    if(keys["w"]) player.y -= player.speed;
-    if(keys["s"]) player.y += player.speed;
-    if(keys["a"]) player.x -= player.speed;
-    if(keys["d"]) player.x += player.speed;
-
-    player.x = Math.max(0, Math.min(WORLD_WIDTH, player.x));
-    player.y = Math.max(0, Math.min(WORLD_HEIGHT, player.y));
-
-    camera.x = player.x - canvas.width/2;
-    camera.y = player.y - canvas.height/2;
-
-    if(shooting && Math.random()<0.35) shoot();
-
-    bullets.forEach((b,i)=>{
-        b.x+=b.dx;
-        b.y+=b.dy;
-
-        enemies.forEach((e,ei)=>{
-            const dist = Math.hypot(b.x-e.x,b.y-e.y);
-            if(dist<e.radius){
-                e.hp -= b.damage;
-                bullets.splice(i,1);
-
-                if(e.hp<=0){
-                    enemies.splice(ei,1);
-                    score+=10;
-                }
-            }
-        });
-    });
-
-    enemies.forEach((e)=>{
-        const angle = Math.atan2(player.y-e.y, player.x-e.x);
-        e.x += Math.cos(angle)*e.speed;
-        e.y += Math.sin(angle)*e.speed;
-
-        const dist = Math.hypot(player.x-e.x,player.y-e.y);
-        if(dist<player.radius+e.radius){
-            player.hp -= 0.4;
-        }
-    });
-
-    if(enemies.length===0){
-        wave++;
-        for(let i=0;i<wave*4;i++) spawnEnemy();
-    }
-}
-
-function draw(){
-
-    ctx.fillStyle="black";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    ctx.save();
-    ctx.translate(-camera.x,-camera.y);
-
-    if(mapImage.complete){
-        ctx.drawImage(mapImage,0,0,WORLD_WIDTH,WORLD_HEIGHT);
-    }
-
-    ctx.fillStyle="cyan";
-    ctx.beginPath();
-    ctx.arc(player.x,player.y,player.radius,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.strokeStyle="white";
-    ctx.lineWidth=3;
-    ctx.beginPath();
-    ctx.moveTo(player.x,player.y);
-    ctx.lineTo(mouse.x+camera.x,mouse.y+camera.y);
-    ctx.stroke();
-
-    bullets.forEach(b=>{
-        ctx.fillStyle="yellow";
-        ctx.font="16px Arial";
-        ctx.fillText(b.digit,b.x,b.y);
-    });
-
-    enemies.forEach(e=>{
-        ctx.fillStyle="green";
-        ctx.beginPath();
-        ctx.arc(e.x,e.y,e.radius,0,Math.PI*2);
-        ctx.fill();
-
-        ctx.fillStyle="white";
-        ctx.font="20px Arial";
-        ctx.fillText("π",e.x-5,e.y+5);
-    });
-
-    ctx.restore();
-
-    drawMinimap();
-    updateUI();
-}
-
-function drawMinimap(){
-    mtx.clearRect(0,0,minimap.width,minimap.height);
-
-    const scaleX = minimap.width / WORLD_WIDTH;
-    const scaleY = minimap.height / WORLD_HEIGHT;
-
-    mtx.fillStyle="green";
-    mtx.fillRect(player.x*scaleX-3, player.y*scaleY-3,6,6);
-
-    mtx.fillStyle="red";
-    enemies.forEach(e=>{
-        mtx.fillRect(e.x*scaleX-2, e.y*scaleY-2,4,4);
-    });
-}
-
-function updateUI(){
-    document.getElementById("ui").innerHTML =
-        "HP: "+Math.floor(player.hp)+
-        " | Wave: "+wave+
-        " | Score: "+score;
-
-    const hpPercent = (player.hp/player.maxHp)*100;
-    document.getElementById("hpBar").style.width = hpPercent+"%";
-}
-
-function gameLoop(){
-    if(!gameStarted) return;
-
-    update();
-    draw();
-
-    if(player.hp>0){
-        requestAnimationFrame(gameLoop);
-    } else {
-        alert("Game Over! Score: "+score);
-        location.reload();
-    }
-}
-</script>
-
+  <a class="visitor-badge" href="https://visitorbadge.io/status?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F">
+    <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F&label=Broj%20igra%C4%8Da&labelColor=%2339ff14&countColor=%230a0a0a" alt="Broj igrača" />
+  </a>
 </body>
 </html>
