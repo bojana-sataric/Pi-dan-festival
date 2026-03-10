@@ -1,213 +1,532 @@
+Преписка је отворена. 1 прочитана порука.
+
+Пређи на садржај
+Коришћење Gmail-а са читачима екрана
+7 од 2.139
+(без наслова)
+Примљено
+
+Luka Jakovljevic
+Прилози
+11:34 (пре 2 сата)
+коме ја
+
+update vuk igrica
+ Број прилога: 2
+  •  Скенирао Gmail
 <!DOCTYPE html>
-<html lang="sr">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nije svaki dan Pi-Dan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0f0f14;
-      --surface: #1a1a22;
-      --accent: #22c55e;
-      --text: #e8e8ed;
-      --muted: #8b8ba7;
-      --radius: 18px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PI Defender</title>
+<style>
+* { touch-action: none; -webkit-tap-highlight-color: transparent; }
+html, body { margin:0; padding:0; overflow:hidden; background:black; font-family:Arial; width:100%; height:100%; }
+canvas { display:block; width:100%; height:100%; object-fit: contain; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+#ui {
+    position:absolute;
+    top:10px;
+    left:10px;
+    color:white;
+    font-size:clamp(12px, 3vw, 18px);
+    z-index:10;
+    text-shadow:0 1px 2px #000;
+}
 
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-    }
+#hpBarContainer{
+    position:absolute;
+    top:40px;
+    left:10px;
+    width:min(250px, 70vw);
+    height:20px;
+    border:2px solid white;
+    z-index:10;
+}
 
-    .container {
-      max-width: 1000px;
-      width: 100%;
-    }
+#hpBar{
+    height:100%;
+    width:100%;
+    background:red;
+    transition:width 0.2s;
+}
 
-    header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
+#menu {
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    z-index:100;
+}
 
-    header h1 {
-      font-size: clamp(2.5rem, 6vw, 3.5rem);
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
+button {
+    padding:15px 30px;
+    font-size:20px;
+    cursor:pointer;
+}
 
-    header p {
-      font-size: 1.1rem;
-      color: var(--muted);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
+#minimap {
+    position:absolute;
+    top:10px;
+    right:10px;
+    border:2px solid white;
+    background:#111;
+    z-index:10;
+    max-width:min(200px, 25vw);
+    max-height:min(200px, 25vw);
+    width:min(200px, 25vw);
+    height:min(200px, 25vw);
+}
 
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-    }
+/* Mobilne kontrole - prikazuju se samo na touch uređajima */
+#mobile-controls {
+    display:none;
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:5;
+}
+#mobile-controls.active {
+    display:block;
+}
+#mobile-controls > * {
+    pointer-events:auto;
+}
 
-    .card {
-      background: var(--surface);
-      padding: 1.8rem;
-      border-radius: var(--radius);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      text-align: center;
-    }
+/* Levi džojstik - kretanje */
+#joystick-left {
+    position:absolute;
+    left:20px;
+    bottom:80px;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.15);
+    border:3px solid rgba(255,255,255,0.5);
+    touch-action:none;
+}
+#joystick-knob {
+    position:absolute;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:rgba(0,200,255,0.8);
+    border:2px solid white;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    transition:transform 0.05s;
+    pointer-events:none;
+}
 
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-    }
+/* Dugme za pucanje */
+#btn-fire {
+    position:absolute;
+    right:25px;
+    bottom:80px;
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:rgba(255,50,50,0.8);
+    border:4px solid rgba(255,255,255,0.8);
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+}
+#btn-fire:active {
+    background:rgba(255,80,80,1);
+    transform:scale(0.95);
+}
 
-    .card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 1.2rem;
-      min-height: 48px;
-    }
-
-    .card a {
-      display: inline-block;
-      padding: 0.6rem 1.2rem;
-      background: var(--accent);
-      color: var(--bg);
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: 600;
-      transition: background 0.2s ease;
-    }
-
-    .card a:hover {
-      background: #16a34a;
-    }
-
-    footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .logo-top-left {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      height: 72px;
-      width: auto;
-      z-index: 1000;
-    }
-
-    .visitor-badge {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      z-index: 1000;
-    }
-
-    .visitor-badge img {
-      display: block;
-    }
-
-    .btn-school {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 1000;
-      display: inline-block;
-      padding: 0.6rem 1.2rem;
-      background: var(--accent);
-      color: var(--bg);
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .btn-school:hover {
-      background: #16a34a;
-      transform: translateY(-2px);
-    }
-  </style>
+/* Zona za ciljanje - desna polovina ekrana */
+#aim-zone {
+    position:absolute;
+    right:0;
+    top:0;
+    width:50%;
+    height:100%;
+    touch-action:none;
+}
+</style>
 </head>
 <body>
-  <img class="logo-top-left" src="logo.png" alt="Logo">
-  <a class="btn-school" href="https://www.skolaepa.com/" target="_blank" rel="noopener noreferrer">Sajt škole</a>
 
-  <div class="container">
+<div id="menu">
+    <h1>PI APOCALYPSE</h1>
+    <button onclick="startGame()">START GAME</button>
+</div>
 
-    <header>
-      <h1>Nije svaki dan Pi-Dan</h1>
-      <p>
-        Digitalni festival učeničkih igara povodom Dana broja π.
-        Izaberi igru, testiraj znanje i zabavi se.
-      </p>
-    </header>
+<div id="ui"></div>
+<div id="hpBarContainer"><div id="hpBar"></div></div>
 
-    <section class="games-grid">
+<canvas id="game"></canvas>
+<canvas id="minimap" width="200" height="200"></canvas>
 
-      <div class="card">
-        <h3>Sledeća cifra</h3>
-        <p>Pogodi sledeću cifru broja π pre nego što istekne vreme.</p>
-        <a href="igre/igra1/index.html">Igraj</a>
-        <p>učenik Luka Jakovljević III-2</p>
-      </div>
+<div id="mobile-controls">
+    <div id="joystick-left">
+        <div id="joystick-knob"></div>
+    </div>
+    <div id="aim-zone"></div>
+    <button type="button" id="btn-fire">PUCANJ</button>
+</div>
 
-     
-      <div class="card">
-        <h3>Pi Svemirci</h3>
-        <p>Pobedi π.</p>
-        <a href="igre/igra2/index.html">Igraj</a>
-        <p>učenik Vuk Grigorjev III-2</p>
-        <p>igra se na računaru</p>
-      </div>
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-      <div class="card">
-        <h3>Pi Izazov</h3>
-        <p>Kombinacija brzine, znanja i koncentracije.</p>
-        <a href="igre/igre3/index.html">Igraj</a>
-        <p>Miona Eraković III-2</p>
-      </div>
+const minimap = document.getElementById("minimap");
+const mtx = minimap.getContext("2d");
 
-      <div class="card">
-        <h3>Pi Memorija</h3>
-        <p>Koliko cifara možeš da zapamtiš bez greške?</p>
-        <a href="igre/igra4/index.html">Igraj</a>
-        <p>učenici Amon Niv i Anton Lebedev III-2</p>
-      </div>
+function resizeCanvas(){
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    if(minimap){
+        const size = Math.min(200, Math.floor(w*0.25));
+        minimap.width = size;
+        minimap.height = size;
+    }
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-      
-    </section>
+const isTouchDevice = ()=> "ontouchstart" in window || navigator.maxTouchPoints > 0;
+if(isTouchDevice()){
+    document.getElementById("mobile-controls").classList.add("active");
+}
 
-    <footer>
-      14. mart • Projekat realizovan u okviru školske aktivnosti
-    </footer>
+let mapImage = new Image();
+mapImage.src = "map.png";
 
-  </div>
+let gameStarted = false;
 
-  <a class="visitor-badge" href="https://visitorbadge.io/status?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F">
-    <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F&label=Broj%20igra%C4%8Da&labelColor=%2339ff14&countColor=%230a0a0a" alt="Broj igrača" />
-  </a>
+const WORLD_WIDTH = 3000;
+const WORLD_HEIGHT = 3000;
+
+const piDigits = "314159265358979323846264338327950288419716939937510";
+
+let keys = {};
+let bullets = [];
+let enemies = [];
+
+let mouse = {x:0,y:0};
+let shooting = false;
+let piIndex = 0;
+
+let camera = { x:0, y:0 };
+
+let player = {
+    x: WORLD_WIDTH/2,
+    y: WORLD_HEIGHT/2,
+    radius: 20,
+    speed: 5,
+    hp: 100,
+    maxHp: 100
+};
+
+let wave = 1;
+let score = 0;
+
+function startGame(){
+    document.getElementById("menu").style.display="none";
+    gameStarted = true;
+    if(isTouchDevice()){
+        mouse.x = canvas.width / 2;
+        mouse.y = canvas.height / 2 - 50;
+    }
+    for(let i=0;i<5;i++) spawnEnemy();
+    gameLoop();
+}
+
+document.addEventListener("keydown", e=> keys[e.key.toLowerCase()] = true);
+document.addEventListener("keyup", e=> keys[e.key.toLowerCase()] = false);
+
+canvas.addEventListener("mousemove", e=>{
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+canvas.addEventListener("mousedown", ()=> shooting = true);
+canvas.addEventListener("mouseup", ()=> shooting = false);
+
+// --- Touch / mobilne kontrole ---
+let touchMove = { x: 0, y: 0 };
+let joystickActive = false;
+let joystickBase = { x: 0, y: 0 };
+const JOYSTICK_R = 55;
+
+function getCanvasRect(){
+    const r = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / r.width;
+    const scaleY = canvas.height / r.height;
+    return { r, scaleX, scaleY };
+}
+
+canvas.addEventListener("touchmove", e=> e.preventDefault(), { passive: false });
+canvas.addEventListener("touchstart", e=> e.preventDefault(), { passive: false });
+
+document.getElementById("aim-zone").addEventListener("touchstart", function(e){
+    e.preventDefault();
+    if(e.touches.length) {
+        const t = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = (t.clientX - rect.left) * (canvas.width / rect.width);
+        mouse.y = (t.clientY - rect.top) * (canvas.height / rect.height);
+    }
+}, { passive: false });
+document.getElementById("aim-zone").addEventListener("touchmove", function(e){
+    e.preventDefault();
+    if(e.touches.length) {
+        const t = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = (t.clientX - rect.left) * (canvas.width / rect.width);
+        mouse.y = (t.clientY - rect.top) * (canvas.height / rect.height);
+    }
+}, { passive: false });
+
+document.getElementById("btn-fire").addEventListener("touchstart", function(e){
+    e.preventDefault();
+    shooting = true;
+}, { passive: false });
+document.getElementById("btn-fire").addEventListener("touchend", function(e){
+    e.preventDefault();
+    shooting = false;
+}, { passive: false });
+document.getElementById("btn-fire").addEventListener("touchcancel", function(){
+    shooting = false;
+}, { passive: false });
+
+var joystickEl = document.getElementById("joystick-left");
+var knobEl = document.getElementById("joystick-knob");
+var joystickTouchId = null;
+joystickEl.addEventListener("touchstart", function(e){
+    e.preventDefault();
+    if(e.touches.length){
+        joystickTouchId = e.touches[0].identifier;
+        joystickActive = true;
+    }
+}, { passive: false });
+
+document.addEventListener("touchmove", function(e){
+    if(!joystickActive || joystickTouchId === null) return;
+    for(var i=0;i<e.touches.length;i++){
+        var t = e.touches[i];
+        if(t.identifier !== joystickTouchId) continue;
+        e.preventDefault();
+        var rect = joystickEl.getBoundingClientRect();
+        var cx = rect.left + rect.width/2;
+        var cy = rect.top + rect.height/2;
+        var dx = t.clientX - cx;
+        var dy = t.clientY - cy;
+        var len = Math.sqrt(dx*dx + dy*dy) || 1;
+        var maxLen = rect.width/2 - 25;
+        if(len > maxLen) { dx = dx/len*maxLen; dy = dy/len*maxLen; }
+        touchMove.x = dx / maxLen;
+        touchMove.y = dy / maxLen;
+        knobEl.style.transform = "translate(calc(-50% + " + dx + "px), calc(-50% + " + dy + "px))";
+        return;
+    }
+});
+function onJoystickTouchEnd(e){
+    for(var i=0;i<e.changedTouches.length;i++){
+        if(e.changedTouches[i].identifier === joystickTouchId){
+            joystickTouchId = null;
+            joystickActive = false;
+            touchMove.x = 0;
+            touchMove.y = 0;
+            knobEl.style.transform = "translate(-50%,-50%)";
+            break;
+        }
+    }
+}
+document.addEventListener("touchend", onJoystickTouchEnd);
+document.addEventListener("touchcancel", onJoystickTouchEnd);
+
+function spawnEnemy(){
+    enemies.push({
+        x: Math.random()*WORLD_WIDTH,
+        y: Math.random()*WORLD_HEIGHT,
+        radius: 25,
+        speed: 1 + wave*0.3,
+        hp: 30 + wave*10
+    });
+}
+
+function shoot(){
+    const worldMouseX = mouse.x + camera.x;
+    const worldMouseY = mouse.y + camera.y;
+
+    const angle = Math.atan2(worldMouseY-player.y, worldMouseX-player.x);
+
+    const digit = parseInt(piDigits[piIndex]);
+    piIndex = (piIndex+1)%piDigits.length;
+
+    bullets.push({
+        x: player.x,
+        y: player.y,
+        dx: Math.cos(angle)*10,
+        dy: Math.sin(angle)*10,
+        damage: digit+1,
+        digit: digit
+    });
+}
+
+function update(){
+    var speed = player.speed;
+    if(isTouchDevice()){
+        if(Math.abs(touchMove.x) > 0.1 || Math.abs(touchMove.y) > 0.1){
+            player.x += touchMove.x * speed;
+            player.y += touchMove.y * speed;
+        }
+    }
+    if(keys["w"]) player.y -= speed;
+    if(keys["s"]) player.y += speed;
+    if(keys["a"]) player.x -= speed;
+    if(keys["d"]) player.x += speed;
+
+    player.x = Math.max(0, Math.min(WORLD_WIDTH, player.x));
+    player.y = Math.max(0, Math.min(WORLD_HEIGHT, player.y));
+
+    camera.x = player.x - canvas.width/2;
+    camera.y = player.y - canvas.height/2;
+
+    if(shooting && Math.random()<0.35) shoot();
+
+    bullets.forEach((b,i)=>{
+        b.x+=b.dx;
+        b.y+=b.dy;
+
+        enemies.forEach((e,ei)=>{
+            const dist = Math.hypot(b.x-e.x,b.y-e.y);
+            if(dist<e.radius){
+                e.hp -= b.damage;
+                bullets.splice(i,1);
+
+                if(e.hp<=0){
+                    enemies.splice(ei,1);
+                    score+=10;
+                }
+            }
+        });
+    });
+
+    enemies.forEach((e)=>{
+        const angle = Math.atan2(player.y-e.y, player.x-e.x);
+        e.x += Math.cos(angle)*e.speed;
+        e.y += Math.sin(angle)*e.speed;
+
+        const dist = Math.hypot(player.x-e.x,player.y-e.y);
+        if(dist<player.radius+e.radius){
+            player.hp -= 0.4;
+        }
+    });
+
+    if(enemies.length===0){
+        wave++;
+        for(let i=0;i<wave*4;i++) spawnEnemy();
+    }
+}
+
+function draw(){
+
+    ctx.fillStyle="black";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.save();
+    ctx.translate(-camera.x,-camera.y);
+
+    if(mapImage.complete){
+        ctx.drawImage(mapImage,0,0,WORLD_WIDTH,WORLD_HEIGHT);
+    }
+
+    ctx.fillStyle="cyan";
+    ctx.beginPath();
+    ctx.arc(player.x,player.y,player.radius,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle="white";
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.moveTo(player.x,player.y);
+    ctx.lineTo(mouse.x+camera.x,mouse.y+camera.y);
+    ctx.stroke();
+
+    bullets.forEach(b=>{
+        ctx.fillStyle="yellow";
+        ctx.font="16px Arial";
+        ctx.fillText(b.digit,b.x,b.y);
+    });
+
+    enemies.forEach(e=>{
+        ctx.fillStyle="green";
+        ctx.beginPath();
+        ctx.arc(e.x,e.y,e.radius,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.fillStyle="white";
+        ctx.font="20px Arial";
+        ctx.fillText("π",e.x-5,e.y+5);
+    });
+
+    ctx.restore();
+
+    drawMinimap();
+    updateUI();
+}
+
+function drawMinimap(){
+    mtx.clearRect(0,0,minimap.width,minimap.height);
+
+    const scaleX = minimap.width / WORLD_WIDTH;
+    const scaleY = minimap.height / WORLD_HEIGHT;
+
+    mtx.fillStyle="green";
+    mtx.fillRect(player.x*scaleX-3, player.y*scaleY-3,6,6);
+
+    mtx.fillStyle="red";
+    enemies.forEach(e=>{
+        mtx.fillRect(e.x*scaleX-2, e.y*scaleY-2,4,4);
+    });
+}
+
+function updateUI(){
+    document.getElementById("ui").innerHTML =
+        "HP: "+Math.floor(player.hp)+
+        " | Wave: "+wave+
+        " | Score: "+score;
+
+    const hpPercent = (player.hp/player.maxHp)*100;
+    document.getElementById("hpBar").style.width = hpPercent+"%";
+}
+
+function gameLoop(){
+    if(!gameStarted) return;
+
+    update();
+    draw();
+
+    if(player.hp>0){
+        requestAnimationFrame(gameLoop);
+    } else {
+        alert("Game Over! Score: "+score);
+        location.reload();
+    }
+}
+</script>
+
 </body>
 </html>
+index (1).html
+Приказује се index (1).html.
