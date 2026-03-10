@@ -108,9 +108,53 @@
       font-size: 0.85rem;
       color: var(--muted);
     }
+
+    .logo-top-left {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      height: 72px;
+      width: auto;
+      z-index: 1000;
+    }
+
+    .visitor-badge {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 1000;
+    }
+
+    .visitor-badge img {
+      display: block;
+    }
+
+    .btn-school {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-school:hover {
+      background: #16a34a;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
+  <img class="logo-top-left" src="logo.png" alt="Logo">
+  <a class="btn-school" href="https://www.skolaepa.com/" target="_blank" rel="noopener noreferrer">Sajt škole</a>
+
   <div class="container">
 
     <header>
@@ -158,16 +202,12 @@
 
     <footer>
       14. mart • Projekat realizovan u okviru školske aktivnosti
-      
-
-
-
-        <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F">
-        <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F&label=Broj%20igra%C4%8Da&labelColor=%2339ff14&countColor=%230a0a0a" /></a>
-
-
     </footer>
 
   </div>
+
+  <a class="visitor-badge" href="https://visitorbadge.io/status?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F">
+    <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F&label=Broj%20igra%C4%8Da&labelColor=%2339ff14&countColor=%230a0a0a" alt="Broj igrača" />
+  </a>
 </body>
 </html>
