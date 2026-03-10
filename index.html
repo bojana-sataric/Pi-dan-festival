@@ -21,6 +21,11 @@
       padding: 0;
     }
 
+    html {
+      overflow-x: hidden;
+      scroll-behavior: auto;
+    }
+
     body {
       font-family: 'Outfit', sans-serif;
       background: var(--bg);
@@ -28,7 +33,19 @@
       min-height: 100vh;
       padding: 2rem;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    
+    .top-bar {
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 0 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .container {
@@ -110,19 +127,25 @@
     }
 
     .logo-top-left {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
       height: 72px;
       width: auto;
-      z-index: 1000;
+      display: block;
     }
 
-    .visitor-badge {
+
+    .visitor-badge-wrap {
+      display: none;
+    }
+
+    .visitor-badge-fixed {
       position: fixed;
       bottom: 1rem;
       right: 1rem;
       z-index: 1000;
+    }
+
+    .visitor-badge {
+      display: inline-block;
     }
 
     .visitor-badge img {
@@ -130,10 +153,6 @@
     }
 
     .btn-school {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 1000;
       display: inline-block;
       padding: 0.6rem 1.2rem;
       background: var(--accent);
@@ -149,13 +168,58 @@
       background: #16a34a;
       transform: translateY(-2px);
     }
+
+    @media (max-width: 768px) {
+      body {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .top-bar {
+        padding: 0 0 0.75rem;
+      }
+
+      .logo-top-left {
+        height: 48px;
+        max-width: 120px;
+        object-fit: contain;
+      }
+
+      .btn-school {
+        padding: 0.5rem 0.9rem;
+        font-size: 0.85rem;
+      }
+
+  
+      .visitor-badge-fixed {
+        display: none;
+      }
+
+      .visitor-badge-wrap {
+        display: block;
+        margin-top: 2rem;
+        text-align: right;
+        padding-bottom: 1rem;
+      }
+
+      .visitor-badge-inline {
+        position: static;
+        display: inline-block;
+      }
+
+      .visitor-badge-wrap img {
+        max-width: 160px;
+        height: auto;
+      }
+    }
   </style>
 </head>
 <body>
-  <img class="logo-top-left" src="logo.png" alt="Logo">
-  <a class="btn-school" href="https://www.skolaepa.com/" target="_blank" rel="noopener noreferrer">Sajt škole</a>
-
   <div class="container">
+  <header class="top-bar" role="banner">
+    <img class="logo-top-left" src="logo.png" alt="Logo">
+    <a class="btn-school" href="https://www.skolaepa.com/" target="_blank" rel="noopener noreferrer">Sajt škole</a>
+  </header>
 
     <header>
       <h1>Nije svaki dan Pi-Dan</h1>
@@ -204,10 +268,20 @@
       14. mart • Projekat realizovan u okviru školske aktivnosti
     </footer>
 
+
+    <div class="visitor-badge-wrap">
+      <a class="visitor-badge visitor-badge-inline" href="https://visitorbadge.io/status?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F" target="_blank" rel="noopener noreferrer">
+        <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F&label=Broj%20igra%C4%8Da&labelColor=%23e8e8ed&countColor=%2322c55e&style=flat-square" alt="Broj igrača" />
+      </a>
+    </div>
+
   </div>
 
-  <a class="visitor-badge" href="https://visitorbadge.io/status?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F">
-    <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F&label=Broj%20igra%C4%8Da&labelColor=%2339ff14&countColor=%230a0a0a" alt="Broj igrača" />
-  </a>
+
+  <div class="visitor-badge-fixed">
+    <a class="visitor-badge" href="https://visitorbadge.io/status?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F" target="_blank" rel="noopener noreferrer">
+      <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fbojana-sataric.github.io%2FPi-dan-festival%2F&label=Broj%20igra%C4%8Da&labelColor=%23e8e8ed&countColor=%2322c55e&style=flat-square" alt="Broj igrača" />
+    </a>
+  </div>
 </body>
 </html>
