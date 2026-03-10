@@ -2,38 +2,33 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PI Defender</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PI Apocalypse</title>
 <style>
-* { touch-action: none; -webkit-tap-highlight-color: transparent; }
-html, body { margin:0; padding:0; overflow:hidden; background:black; font-family:Arial; width:100%; height:100%; }
-canvas { display:block; width:100%; height:100%; object-fit: contain; }
+body { margin:0; overflow:hidden; background:black; font-family:Arial; }
+canvas { display:block; }
 
 #ui {
     position:absolute;
     top:10px;
     left:10px;
     color:white;
-    font-size:clamp(12px, 3vw, 18px);
-    z-index:10;
-    text-shadow:0 1px 2px #000;
+    font-size:18px;
 }
 
 #hpBarContainer{
     position:absolute;
     top:40px;
     left:10px;
-    width:min(250px, 70vw);
-    height:20px;
+    width:250px;
+    height:25px;
     border:2px solid white;
-    z-index:10;
 }
 
 #hpBar{
     height:100%;
     width:100%;
     background:red;
-    transition:width 0.2s;
 }
 
 #menu {
@@ -46,7 +41,6 @@ canvas { display:block; width:100%; height:100%; object-fit: contain; }
     justify-content:center;
     align-items:center;
     color:white;
-    z-index:100;
 }
 
 button {
@@ -61,84 +55,79 @@ button {
     right:10px;
     border:2px solid white;
     background:#111;
-    z-index:10;
-    max-width:min(200px, 25vw);
-    max-height:min(200px, 25vw);
-    width:min(200px, 25vw);
-    height:min(200px, 25vw);
 }
 
-/* Mobilne kontrole - prikazuju se samo na touch uređajima */
-#mobile-controls {
-    display:none;
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:5;
-}
-#mobile-controls.active {
-    display:block;
-}
-#mobile-controls > * {
-    pointer-events:auto;
+#touchControls {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
 }
 
-/* Levi džojstik - kretanje */
-#joystick-left {
-    position:absolute;
-    left:20px;
-    bottom:80px;
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.15);
-    border:3px solid rgba(255,255,255,0.5);
-    touch-action:none;
-}
-#joystick-knob {
-    position:absolute;
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    background:rgba(0,200,255,0.8);
-    border:2px solid white;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    transition:transform 0.05s;
-    pointer-events:none;
+#touchControlsRow {
+    display: flex;
+    gap: 8px;
 }
 
-/* Dugme za pucanje */
-#btn-fire {
-    position:absolute;
-    right:25px;
-    bottom:80px;
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    background:rgba(255,50,50,0.8);
-    border:4px solid rgba(255,255,255,0.8);
-    color:white;
-    font-size:18px;
-    font-weight:bold;
-    touch-action:none;
-    user-select:none;
-    -webkit-user-select:none;
-}
-#btn-fire:active {
-    background:rgba(255,80,80,1);
-    transform:scale(0.95);
+.ctrlBtn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
 }
 
-/* Zona za ciljanje - desna polovina ekrana */
-#aim-zone {
-    position:absolute;
-    right:0;
-    top:0;
-    width:50%;
-    height:100%;
-    touch-action:none;
+#fireBtn {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: rgba(255,0,0,0.7);
+    color: #fff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+    z-index: 10;
+}
+
+@media (min-width: 768px) {
+    #touchControls {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    #ui {
+        font-size: 14px;
+    }
+    #hpBarContainer{
+        top: 32px;
+        width: 180px;
+        height: 18px;
+    }
+    #minimap {
+        width: 140px;
+        height: 140px;
+    }
+    button {
+        font-size: 18px;
+        padding: 12px 22px;
+    }
 }
 </style>
 </head>
@@ -152,16 +141,19 @@ button {
 <div id="ui"></div>
 <div id="hpBarContainer"><div id="hpBar"></div></div>
 
+<div id="touchControls">
+    <button class="ctrlBtn" data-key="w">▲</button>
+    <div id="touchControlsRow">
+        <button class="ctrlBtn" data-key="a">◀</button>
+        <button class="ctrlBtn" data-key="s">▼</button>
+        <button class="ctrlBtn" data-key="d">▶</button>
+    </div>
+</div>
+
+<button id="fireBtn">FIRE</button>
+
 <canvas id="game"></canvas>
 <canvas id="minimap" width="200" height="200"></canvas>
-
-<div id="mobile-controls">
-    <div id="joystick-left">
-        <div id="joystick-knob"></div>
-    </div>
-    <div id="aim-zone"></div>
-    <button type="button" id="btn-fire">PUCANJ</button>
-</div>
 
 <script>
 const canvas = document.getElementById("game");
@@ -170,26 +162,13 @@ const ctx = canvas.getContext("2d");
 const minimap = document.getElementById("minimap");
 const mtx = minimap.getContext("2d");
 
-function resizeCanvas(){
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.width = w + "px";
-    canvas.style.height = h + "px";
-    if(minimap){
-        const size = Math.min(200, Math.floor(w*0.25));
-        minimap.width = size;
-        minimap.height = size;
-    }
-}
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-const isTouchDevice = ()=> "ontouchstart" in window || navigator.maxTouchPoints > 0;
-if(isTouchDevice()){
-    document.getElementById("mobile-controls").classList.add("active");
-}
+window.addEventListener("resize", ()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
 
 let mapImage = new Image();
 mapImage.src = "map.png";
@@ -226,10 +205,6 @@ let score = 0;
 function startGame(){
     document.getElementById("menu").style.display="none";
     gameStarted = true;
-    if(isTouchDevice()){
-        mouse.x = canvas.width / 2;
-        mouse.y = canvas.height / 2 - 50;
-    }
     for(let i=0;i<5;i++) spawnEnemy();
     gameLoop();
 }
@@ -245,98 +220,102 @@ canvas.addEventListener("mousemove", e=>{
 canvas.addEventListener("mousedown", ()=> shooting = true);
 canvas.addEventListener("mouseup", ()=> shooting = false);
 
-// --- Touch / mobilne kontrole ---
-let touchMove = { x: 0, y: 0 };
-let joystickActive = false;
-let joystickBase = { x: 0, y: 0 };
-const JOYSTICK_R = 55;
-
-function getCanvasRect(){
-    const r = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / r.width;
-    const scaleY = canvas.height / r.height;
-    return { r, scaleX, scaleY };
+function getTouchPos(touch){
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    };
 }
 
-canvas.addEventListener("touchmove", e=> e.preventDefault(), { passive: false });
-canvas.addEventListener("touchstart", e=> e.preventDefault(), { passive: false });
-
-document.getElementById("aim-zone").addEventListener("touchstart", function(e){
+canvas.addEventListener("touchstart", e=>{
     e.preventDefault();
-    if(e.touches.length) {
-        const t = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = (t.clientX - rect.left) * (canvas.width / rect.width);
-        mouse.y = (t.clientY - rect.top) * (canvas.height / rect.height);
-    }
-}, { passive: false });
-document.getElementById("aim-zone").addEventListener("touchmove", function(e){
-    e.preventDefault();
-    if(e.touches.length) {
-        const t = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = (t.clientX - rect.left) * (canvas.width / rect.width);
-        mouse.y = (t.clientY - rect.top) * (canvas.height / rect.height);
-    }
-}, { passive: false });
-
-document.getElementById("btn-fire").addEventListener("touchstart", function(e){
-    e.preventDefault();
+    const t = e.touches[0] || e.changedTouches[0];
+    if(!t) return;
+    const pos = getTouchPos(t);
+    mouse.x = pos.x;
+    mouse.y = pos.y;
     shooting = true;
-}, { passive: false });
-document.getElementById("btn-fire").addEventListener("touchend", function(e){
+},{passive:false});
+
+canvas.addEventListener("touchmove", e=>{
+    e.preventDefault();
+    const t = e.touches[0];
+    if(!t) return;
+    const pos = getTouchPos(t);
+    mouse.x = pos.x;
+    mouse.y = pos.y;
+},{passive:false});
+
+canvas.addEventListener("touchend", e=>{
     e.preventDefault();
     shooting = false;
-}, { passive: false });
-document.getElementById("btn-fire").addEventListener("touchcancel", function(){
-    shooting = false;
-}, { passive: false });
+},{passive:false});
 
-var joystickEl = document.getElementById("joystick-left");
-var knobEl = document.getElementById("joystick-knob");
-var joystickTouchId = null;
-joystickEl.addEventListener("touchstart", function(e){
-    e.preventDefault();
-    if(e.touches.length){
-        joystickTouchId = e.touches[0].identifier;
-        joystickActive = true;
-    }
-}, { passive: false });
+document.querySelectorAll(".ctrlBtn").forEach(btn=>{
+    const key = btn.getAttribute("data-key");
+    const setKey = (val)=>{ keys[key] = val; };
 
-document.addEventListener("touchmove", function(e){
-    if(!joystickActive || joystickTouchId === null) return;
-    for(var i=0;i<e.touches.length;i++){
-        var t = e.touches[i];
-        if(t.identifier !== joystickTouchId) continue;
+    // TOUCH – za telefone/tablete
+    btn.addEventListener("touchstart", e=>{
         e.preventDefault();
-        var rect = joystickEl.getBoundingClientRect();
-        var cx = rect.left + rect.width/2;
-        var cy = rect.top + rect.height/2;
-        var dx = t.clientX - cx;
-        var dy = t.clientY - cy;
-        var len = Math.sqrt(dx*dx + dy*dy) || 1;
-        var maxLen = rect.width/2 - 25;
-        if(len > maxLen) { dx = dx/len*maxLen; dy = dy/len*maxLen; }
-        touchMove.x = dx / maxLen;
-        touchMove.y = dy / maxLen;
-        knobEl.style.transform = "translate(calc(-50% + " + dx + "px), calc(-50% + " + dy + "px))";
-        return;
-    }
+        setKey(true);
+    },{passive:false});
+
+    const endHandler = e=>{
+        e.preventDefault();
+        setKey(false);
+    };
+
+    btn.addEventListener("touchend", endHandler,{passive:false});
+    btn.addEventListener("touchcancel", endHandler,{passive:false});
+
+    // MOUSE – da radi i kad se klikne
+    btn.addEventListener("mousedown", e=>{
+        e.preventDefault();
+        setKey(true);
+    });
+    btn.addEventListener("mouseup", e=>{
+        e.preventDefault();
+        setKey(false);
+    });
+    btn.addEventListener("mouseleave", e=>{
+        e.preventDefault();
+        setKey(false);
+    });
 });
-function onJoystickTouchEnd(e){
-    for(var i=0;i<e.changedTouches.length;i++){
-        if(e.changedTouches[i].identifier === joystickTouchId){
-            joystickTouchId = null;
-            joystickActive = false;
-            touchMove.x = 0;
-            touchMove.y = 0;
-            knobEl.style.transform = "translate(-50%,-50%)";
-            break;
-        }
-    }
+
+// Poseban taster za pucanje
+const fireBtn = document.getElementById("fireBtn");
+if(fireBtn){
+    const setShoot = (val)=>{ shooting = val; };
+
+    // TOUCH
+    fireBtn.addEventListener("touchstart", e=>{
+        e.preventDefault();
+        setShoot(true);
+    },{passive:false});
+    const fireEnd = e=>{
+        e.preventDefault();
+        setShoot(false);
+    };
+    fireBtn.addEventListener("touchend", fireEnd,{passive:false});
+    fireBtn.addEventListener("touchcancel", fireEnd,{passive:false});
+
+    // MOUSE
+    fireBtn.addEventListener("mousedown", e=>{
+        e.preventDefault();
+        setShoot(true);
+    });
+    fireBtn.addEventListener("mouseup", e=>{
+        e.preventDefault();
+        setShoot(false);
+    });
+    fireBtn.addEventListener("mouseleave", e=>{
+        e.preventDefault();
+        setShoot(false);
+    });
 }
-document.addEventListener("touchend", onJoystickTouchEnd);
-document.addEventListener("touchcancel", onJoystickTouchEnd);
 
 function spawnEnemy(){
     enemies.push({
@@ -368,17 +347,11 @@ function shoot(){
 }
 
 function update(){
-    var speed = player.speed;
-    if(isTouchDevice()){
-        if(Math.abs(touchMove.x) > 0.1 || Math.abs(touchMove.y) > 0.1){
-            player.x += touchMove.x * speed;
-            player.y += touchMove.y * speed;
-        }
-    }
-    if(keys["w"]) player.y -= speed;
-    if(keys["s"]) player.y += speed;
-    if(keys["a"]) player.x -= speed;
-    if(keys["d"]) player.x += speed;
+
+    if(keys["w"]) player.y -= player.speed;
+    if(keys["s"]) player.y += player.speed;
+    if(keys["a"]) player.x -= player.speed;
+    if(keys["d"]) player.x += player.speed;
 
     player.x = Math.max(0, Math.min(WORLD_WIDTH, player.x));
     player.y = Math.max(0, Math.min(WORLD_HEIGHT, player.y));
