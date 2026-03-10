@@ -281,6 +281,11 @@
             margin: 40px 0;
         }
 
+        .level-buttons {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         .formule-kolone {
             background: black;
             border: 5px solid #39FF14;
@@ -569,6 +574,275 @@
             text-shadow: 0 0 20px #39FF14;
         }
 
+        /* ==================== RESPONSIVE (TABLET / TELEFON) ==================== */
+        @media (max-width: 900px) {
+            .rotirajuci-krug {
+                width: 650px;
+                height: 650px;
+            }
+
+            .pi-hero { font-size: 140px; }
+            .meni-dugme { font-size: 44px; }
+            .prikaz-niza { font-size: 70px; }
+            .cifra-dugme { font-size: 60px; }
+            .pitanje-tekst { font-size: 44px; }
+            .odgovor-dugme { font-size: 40px; }
+            .tajmer { font-size: 90px; }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+
+            .matrix-bg { opacity: 0.10; }
+            .rotirajuci-krug { display: none; }
+
+            #menuContainer, #game1Container, #game2Container, #game3Container, #learnContainer {
+                width: 98%;
+                min-height: 0;
+                padding: 18px;
+                border-width: 4px;
+                border-radius: 40px;
+            }
+
+            .pi-hero { font-size: 110px; margin-bottom: 16px; }
+            .pi-cifre {
+                font-size: 28px;
+                letter-spacing: 4px;
+                padding: 18px 20px;
+                margin: 16px auto 26px auto;
+                border-radius: 40px;
+            }
+
+            .meni { gap: 16px; }
+            .meni-dugme {
+                font-size: 28px;
+                padding: 16px 18px;
+                border-radius: 50px;
+                border-width: 4px;
+                letter-spacing: 2px;
+            }
+
+            .game-header {
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 14px 16px;
+                border-radius: 40px;
+                border-width: 3px;
+                font-size: 20px;
+            }
+
+            .nazad-dugme {
+                font-size: 20px;
+                padding: 10px 14px;
+                border-radius: 40px;
+                border-width: 3px;
+            }
+
+            .rezultat { font-size: 20px; }
+
+            .pi-niz {
+                padding: 24px;
+                border-radius: 40px;
+                border-width: 4px;
+                margin: 20px 0;
+            }
+
+            .prikaz-niza {
+                font-size: 44px;
+                letter-spacing: 6px;
+            }
+
+            .cifre-opcije {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+                margin: 24px 0;
+            }
+
+            .cifra-dugme {
+                font-size: 40px;
+                padding: 16px;
+                border-radius: 24px;
+                border-width: 4px;
+                min-height: 78px;
+            }
+
+            .poruka-igra {
+                font-size: 22px;
+                margin: 20px 0;
+                padding: 18px;
+                border-radius: 40px;
+                border-width: 3px;
+                min-height: 90px;
+            }
+
+            .level-buttons {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 18px;
+            }
+
+            .formule-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                margin: 20px 0;
+            }
+
+            .formule-kolone {
+                padding: 18px;
+                border-radius: 40px;
+                border-width: 4px;
+                min-height: 0;
+            }
+
+            .kolona-naslov {
+                font-size: 28px;
+                margin-bottom: 18px;
+            }
+
+            .formula-item {
+                font-size: 24px;
+                padding: 16px;
+                border-radius: 28px;
+                border-width: 3px;
+            }
+
+            .tajmer {
+                font-size: 64px;
+                padding: 24px;
+                border-radius: 40px;
+                border-width: 4px;
+                margin: 18px 0;
+            }
+
+            .pitanje-tekst {
+                font-size: 28px;
+                padding: 20px;
+                border-radius: 40px;
+                border-width: 3px;
+                margin: 18px 0;
+            }
+
+            .odgovori-vreme {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                margin: 18px 0;
+            }
+
+            .odgovor-dugme {
+                font-size: 24px;
+                padding: 18px;
+                border-radius: 40px;
+                border-width: 4px;
+                min-height: 90px;
+            }
+
+            .learn-header {
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 14px 16px;
+                border-radius: 40px;
+                border-width: 3px;
+            }
+
+            .naslov-stranice { font-size: 34px; }
+
+            .pi-broj-veliki {
+                font-size: 28px;
+                padding: 22px;
+                border-radius: 40px;
+                border-width: 3px;
+                margin: 18px 0;
+            }
+
+            .info-box {
+                font-size: 18px;
+                padding: 20px;
+                border-radius: 40px;
+                border-width: 3px;
+                margin: 18px 0;
+                line-height: 1.5;
+            }
+
+            .formula-velika {
+                font-size: 28px;
+                padding: 20px;
+                border-radius: 40px;
+                border-width: 3px;
+                margin: 18px 0;
+            }
+
+            .learn-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                margin: 18px 0;
+            }
+
+            .learn-card {
+                padding: 20px;
+                border-radius: 40px;
+                border-width: 3px;
+            }
+
+            .learn-card h3 {
+                font-size: 26px;
+                margin-bottom: 16px;
+            }
+
+            .learn-card p {
+                font-size: 18px;
+                margin: 12px 0;
+            }
+
+            .krug-slike { gap: 20px; margin: 24px 0; }
+
+            .krug {
+                width: 160px;
+                height: 160px;
+                border-width: 4px;
+            }
+
+            .krug1::after {
+                font-size: 28px;
+                top: -16px;
+                right: -22px;
+                padding: 4px 14px;
+                border-width: 3px;
+            }
+
+            .krug1::before {
+                height: 78px;
+                left: 78px;
+            }
+
+            .istorija-item {
+                font-size: 18px;
+                margin: 12px 0;
+                padding: 12px;
+                border-left-width: 6px;
+            }
+
+            .grid-2 { grid-template-columns: 1fr; gap: 14px; }
+
+            .euler-formula {
+                font-size: 24px;
+                padding: 16px;
+                margin-top: 26px;
+            }
+
+            .epa-footer {
+                font-size: 20px;
+                letter-spacing: 6px;
+                margin-top: 14px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .pi-hero { font-size: 90px; }
+            .prikaz-niza { font-size: 38px; letter-spacing: 4px; }
+            .cifra-dugme { font-size: 34px; min-height: 70px; }
+        }
+
         ::-webkit-scrollbar {
             width: 15px;
             background: black;
@@ -640,9 +914,9 @@
             <span class="rezultat" id="brojSpojenih">0 / 10</span>
         </div>
 
-        <div style="text-align: center; margin-bottom: 30px;">
+        <div class="level-buttons">
             <button type="button" class="nazad-dugme" onclick="postaviNivoFormule(1)">NIVO 1 • LAKO</button>
-            <button type="button" class="nazad-dugme" onclick="postaviNivoFormule(2)" style="margin-left: 20px;">NIVO 2 • TEŠKO</button>
+            <button type="button" class="nazad-dugme" onclick="postaviNivoFormule(2)">NIVO 2 • TEŠKO</button>
         </div>
 
         <div class="formule-grid">
@@ -897,7 +1171,7 @@
             { formula: "4πr²", naziv: "POVRŠINA SFERE" },
             { formula: "(α/360)·πr²", naziv: "POVRŠINA KRUŽNOG ISEČKA" },
             { formula: "(α/360)·2πr", naziv: "DUŽINA LUKA" },
-            { formula: "e^(iπ)+1=0", naziv: "OJLEROV IDENTITET" },
+            { formula: "e^(iπ)+1=0", naziv: "EULEROV IDENTITET" },
             { formula: "π = O/d", naziv: "DEFINICIJA π" }
         ];
 
